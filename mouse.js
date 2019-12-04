@@ -8,8 +8,14 @@ export class Mouse {
         this.dragging = false;
         this.trackVelocity = false;
         this.timer = null;
-        // Mouse was pressed
+        this.disabled = false;
+
+        // left mouse button was pressed
         document.body.addEventListener("mousedown", (e) => {
+
+            if (this.disabled)
+                return;        
+
             if (this.dragging == false) {
                 this.dragging = true;
                 this.memory.x = this.current.x;
@@ -19,8 +25,13 @@ export class Mouse {
                 this.startTrackingVelocity();
             }
         });
-        // Mouse was released
+
+        // Left mouse button was released
         document.body.addEventListener("mouseup", (e) => {
+
+            if (this.disabled)
+                return;
+
             this.dragging = false;
             this.current.x = 0;
             this.current.y = 0;
@@ -32,8 +43,13 @@ export class Mouse {
             this.inverse.y = 0;
             this.stopTrackingVelocity();
         });
+
         // Mouse is moving
         document.body.addEventListener("mousemove", (e) => {
+
+            if (this.disabled)
+                return;
+
             this.current.x = e.pageX;
             this.current.y = e.pageY;
 
@@ -48,7 +64,9 @@ export class Mouse {
                 if (this.current.y < this.memory.y) this.inverse.y = this.current.y;
             }
         });
+
     }
+
     // calculate area created by click-and-dragging mouse as a css style
     get box() {
         // create style from inverse x/y
@@ -60,6 +78,7 @@ export class Mouse {
         // return style object
         return this.style;
     }
+
     // Still WIP
     startTrackingVelocity() {
         this.trackVelocity = true;
@@ -71,6 +90,7 @@ export class Mouse {
             }, 35); // 35 is an ideal value, tried others doesn't work so well.
         }
     }
+
     // Still WIP
     stopTrackingVelocity() {
         if (this.timer != null) {
